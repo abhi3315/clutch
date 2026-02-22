@@ -52,12 +52,12 @@ pub fn sanitize(text: &str, rules: &[Rule]) -> Result<SanitizeResult, ClutchErro
             new_output.push_str(&output[last_end..]);
             output = new_output;
         } else {
-            let before = output.clone();
-            output = re.replace_all(&output, label.as_str()).to_string();
-            if output != before {
-                // Count by re-matching on original
-                count = re.find_iter(&before).count();
-            }
+            output = re
+                .replace_all(&output, |_: &regex::Captures| {
+                    count += 1;
+                    label.as_str()
+                })
+                .into_owned();
         }
 
         if count > 0 {
