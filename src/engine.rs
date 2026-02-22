@@ -94,7 +94,7 @@ mod tests {
     fn test_private_key() {
         let rules = compiled_defaults();
         let input =
-            "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQ...\n-----END RSA PRIVATE KEY-----";
+            "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEA0Z3VS5JJcds3xfn/yGaF\n-----END RSA PRIVATE KEY-----";
         let result = sanitize(input, &rules);
         assert!(result.total_redactions >= 1);
         assert!(result.text.contains("[REDACTED:PRIVATE_KEY]"));

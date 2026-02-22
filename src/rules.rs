@@ -107,7 +107,7 @@ pub fn default_rules() -> Vec<Rule> {
         ),
         Rule::new(
             "PRIVATE_KEY",
-            r"(?P<m>-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----[\s\S]*?-----END (?:RSA |EC |OPENSSH )?PRIVATE KEY-----)",
+            r"(?P<m>-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----[A-Za-z0-9/+=\s]+-----END (?:RSA |EC |OPENSSH )?PRIVATE KEY-----)",
         ),
         Rule::new(
             "CONNECTION_STRING",
