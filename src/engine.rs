@@ -201,6 +201,41 @@ PASSWORD=hunter2
     }
 
     #[test]
+    fn test_slack_token() {
+        let rules = compiled_defaults();
+        let input = "token is xoxb-1234567890-abcdefghij";
+        let result = sanitize(input, &rules);
+        assert!(result.text.contains("[REDACTED:SLACK_TOKEN]"));
+    }
+
+    #[test]
+    fn test_npm_token() {
+        let rules = compiled_defaults();
+        let input = "//registry.npmjs.org/:_authToken=npm_abcdefghijklmnopqrstuvwxyz1234567890";
+        let result = sanitize(input, &rules);
+        assert!(result.text.contains("[REDACTED:NPM_TOKEN]"));
+    }
+
+    #[test]
+    fn test_sendgrid_key() {
+        let rules = compiled_defaults();
+        let input = format!(
+            "key is SG.{}.{}",
+            "abcdefghijklmnopqrstuv", "abcdefghijklmnopqrstuvwxyz01234567890123456"
+        );
+        let result = sanitize(&input, &rules);
+        assert!(result.text.contains("[REDACTED:SENDGRID_KEY]"));
+    }
+
+    #[test]
+    fn test_jwt() {
+        let rules = compiled_defaults();
+        let input = "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U";
+        let result = sanitize(input, &rules);
+        assert!(result.text.contains("[REDACTED:JWT]"));
+    }
+
+    #[test]
     fn test_no_false_positive_on_normal_urls() {
         let rules = compiled_defaults();
         let input = "Visit https://example.com/page?query=hello for details";

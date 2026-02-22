@@ -113,6 +113,20 @@ pub fn default_rules() -> Vec<Rule> {
             "DOCKER_MONGO_PASSWORD",
             r"(?m)^[\s\-]*MONGO_INITDB_ROOT_PASSWORD\s*[=:]\s*(?P<m>\S+)",
         ),
+        Rule::new("SLACK_TOKEN", r"(?P<m>xox[bpars]-[A-Za-z0-9\-]{10,255})"),
+        Rule::new("NPM_TOKEN", r"(?P<m>npm_[A-Za-z0-9]{36,})"),
+        Rule::new("PYPI_TOKEN", r"(?P<m>pypi-[A-Za-z0-9_\-]{16,255})"),
+        Rule::new(
+            "SENDGRID_KEY",
+            r"(?P<m>SG\.[A-Za-z0-9_\-]{22}\.[A-Za-z0-9_\-]{43})",
+        ),
+        Rule::new("TWILIO_API_KEY", r"(?P<m>SK[0-9a-fA-F]{32})"),
+        Rule::new("NETLIFY_TOKEN", r"(?P<m>nfp_[A-Za-z0-9]{40,})"),
+        Rule::new("DOPPLER_TOKEN", r"(?P<m>dp\.st\.[A-Za-z0-9_\-]{40,})"),
+        Rule::new(
+            "JWT",
+            r"(?P<m>eyJ[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,})",
+        ),
         Rule::new(
             "PRIVATE_KEY",
             r"(?P<m>-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----[A-Za-z0-9/+=\s]{1,4096}-----END (?:RSA |EC |OPENSSH )?PRIVATE KEY-----)",
