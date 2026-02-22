@@ -64,12 +64,9 @@ pub fn load_rules(config_path: Option<&Path>) -> Result<Vec<Rule>, ClutchError> 
     // Merge: user rules can disable defaults or add new ones
     for user_rule in config.rules {
         if let Some(existing) = rules.iter_mut().find(|r| r.name == user_rule.name) {
-            // User is overriding an existing default rule
-            if !user_rule.enabled {
-                existing.enabled = false;
-            } else {
+            existing.enabled = user_rule.enabled;
+            if !user_rule.pattern.is_empty() {
                 existing.pattern = user_rule.pattern;
-                existing.enabled = user_rule.enabled;
             }
         } else {
             // New user-defined rule
