@@ -46,6 +46,14 @@ Out of the box, clutch detects and redacts:
 - Docker Compose env passwords (`POSTGRES_PASSWORD`, `MYSQL_ROOT_PASSWORD`, etc.)
 - Private keys (RSA, EC, OpenSSH)
 - Connection strings with embedded credentials (PostgreSQL, MongoDB, MySQL)
+- Slack tokens (`xoxb-`, `xoxp-`, `xoxa-`, `xoxr-`, `xoxs-`)
+- npm tokens (`npm_`)
+- PyPI tokens (`pypi-`)
+- SendGrid API keys (`SG.`)
+- Twilio API keys (`SK`)
+- Netlify tokens (`nfp_`)
+- Doppler tokens (`dp.st.`)
+- JWTs (`eyJ...` base64 header.payload.signature)
 
 ## Configuration
 
