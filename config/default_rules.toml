@@ -6,6 +6,12 @@
 #   pattern = "regex pattern"  # Rust regex syntax
 #   enabled = true             # optional, defaults to true
 #
+# Pattern tip: by default, the entire regex match gets redacted. If you
+# want to redact only part of the match (e.g. just the value, not the
+# key name), use a named capture group called "m":
+#   pattern = "MY_KEY=(?P<m>[A-Za-z0-9]+)"
+# This redacts only the value, leaving "MY_KEY=" visible in the output.
+#
 # To disable a built-in rule, add it by name with enabled = false:
 #   [[rules]]
 #   name = "AWS_ACCESS_KEY"
