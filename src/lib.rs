@@ -28,8 +28,13 @@ pub fn run(args: Args) -> Result<i32, ClutchError> {
     // Read clipboard
     let mut clipboard = Clipboard::new().map_err(|e| ClutchError::Clipboard(e.to_string()))?;
 
+    const MAX_CLIPBOARD_BYTES: usize = 10 * 1024 * 1024; // 10 MB
+
     let text = match clipboard.get_text() {
         Ok(t) if t.is_empty() => return Err(ClutchError::EmptyClipboard),
+        Ok(t) if t.len() > MAX_CLIPBOARD_BYTES => {
+            return Err(ClutchError::Clipboard("clipboard content too large".into()))
+        }
         Ok(t) => t,
         Err(_) => return Err(ClutchError::NonTextClipboard),
     };
