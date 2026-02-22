@@ -1,4 +1,7 @@
+use regex::Regex;
 use serde::Deserialize;
+
+use crate::error::ClutchError;
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct Rule {
@@ -21,6 +24,36 @@ impl Rule {
             enabled: true,
         }
     }
+}
+
+#[derive(Debug)]
+pub struct CompiledRule {
+    pub name: String,
+    pub regex: Regex,
+    pub has_named_group: bool,
+}
+
+impl CompiledRule {
+    pub fn compile(rule: &Rule) -> Result<Self, ClutchError> {
+        let regex = Regex::new(&rule.pattern).map_err(|e| ClutchError::InvalidRegex {
+            name: rule.name.clone(),
+            source: e,
+        })?;
+        let has_named_group = regex.capture_names().any(|n| n == Some("m"));
+        Ok(Self {
+            name: rule.name.clone(),
+            regex,
+            has_named_group,
+        })
+    }
+}
+
+pub fn compile_rules(rules: &[Rule]) -> Result<Vec<CompiledRule>, ClutchError> {
+    rules
+        .iter()
+        .filter(|r| r.enabled)
+        .map(CompiledRule::compile)
+        .collect()
 }
 
 pub fn default_rules() -> Vec<Rule> {

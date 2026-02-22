@@ -8,6 +8,7 @@ use clutch::config;
 use clutch::engine;
 use clutch::error::ClutchError;
 use clutch::notify;
+use clutch::rules;
 
 fn main() {
     let args = Args::parse();
@@ -23,16 +24,18 @@ fn main() {
 
 fn run(args: Args) -> Result<i32, ClutchError> {
     let config_path = args.config.as_deref();
-    let rules = config::load_rules(config_path)?;
+    let raw_rules = config::load_rules(config_path)?;
 
     // --list-rules: print rules and exit
     if args.list_rules {
-        for rule in &rules {
+        for rule in &raw_rules {
             let status = if rule.enabled { "enabled" } else { "disabled" };
             println!("[{}] {} — {}", status, rule.name, rule.pattern);
         }
         return Ok(0);
     }
+
+    let compiled = rules::compile_rules(&raw_rules)?;
 
     // Read clipboard
     let mut clipboard = Clipboard::new().map_err(|e| ClutchError::Clipboard(e.to_string()))?;
@@ -44,7 +47,7 @@ fn run(args: Args) -> Result<i32, ClutchError> {
     };
 
     // Sanitize
-    let result = engine::sanitize(&text, &rules)?;
+    let result = engine::sanitize(&text, &compiled);
 
     // Output result
     notify::print_result(&result);
