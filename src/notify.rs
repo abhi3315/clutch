@@ -25,7 +25,9 @@ pub fn send_notification(result: &SanitizeResult) {
         format!("{} secrets redacted", result.total_redactions)
     };
 
-    let script = format!(r#"display notification "{}" with title "Clutch""#, message);
+    // Escape quotes and backslashes to prevent AppleScript injection
+    let escaped = message.replace('\\', "\\\\").replace('"', "\\\"");
+    let script = format!(r#"display notification "{}" with title "Clutch""#, escaped);
 
     // Best-effort — don't fail the whole program if notification fails
     let _ = std::process::Command::new("osascript")
