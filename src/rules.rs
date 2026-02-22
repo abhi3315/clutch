@@ -115,11 +115,11 @@ pub fn default_rules() -> Vec<Rule> {
         ),
         Rule::new(
             "PRIVATE_KEY",
-            r"(?P<m>-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----[A-Za-z0-9/+=\s]+-----END (?:RSA |EC |OPENSSH )?PRIVATE KEY-----)",
+            r"(?P<m>-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----[A-Za-z0-9/+=\s]{1,4096}-----END (?:RSA |EC |OPENSSH )?PRIVATE KEY-----)",
         ),
         Rule::new(
             "CONNECTION_STRING",
-            r"(?P<m>(?:postgresql|postgres|mongodb(?:\+srv)?|mysql)://[^\s:]+:[^\s@]+@[^\s]+)",
+            r"(?P<m>(?:postgresql|postgres|mongodb(?:\+srv)?|mysql)://[^\s:]{1,256}:[^\s@]{1,256}@[^\s]{1,1024})",
         ),
     ]
 }
