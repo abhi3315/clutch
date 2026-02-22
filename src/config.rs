@@ -42,9 +42,11 @@ pub fn load_rules(config_path: Option<&Path>) -> Result<Vec<Rule>, ClutchError> 
 
     // Validate all user regex patterns upfront, even disabled ones,
     // so users get feedback immediately instead of on re-enable.
+    let default_names: std::collections::HashSet<&str> =
+        rules.iter().map(|r| r.name.as_str()).collect();
     for rule in &config.rules {
         // Skip empty-pattern check for rules that only exist to disable a default
-        let is_disable_only = !rule.enabled && default_rules().iter().any(|d| d.name == rule.name);
+        let is_disable_only = !rule.enabled && default_names.contains(rule.name.as_str());
         if rule.pattern.is_empty() && !is_disable_only {
             return Err(ClutchError::Config(format!(
                 "rule '{}' is missing a pattern",
