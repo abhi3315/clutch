@@ -23,7 +23,7 @@ pub fn sanitize(text: &str, rules: &[CompiledRule]) -> SanitizeResult {
         let mut count = 0;
 
         if rule.has_named_group {
-            let mut new_output = String::new();
+            let mut new_output = String::with_capacity(output.len());
             let mut last_end = 0;
 
             for caps in rule.regex.captures_iter(&output) {
