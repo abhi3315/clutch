@@ -17,6 +17,10 @@ fn list_rules(rules: &[rules::Rule]) {
     }
 }
 
+fn clipboard_err(e: arboard::Error) -> ClutchError {
+    ClutchError::Clipboard(e.to_string())
+}
+
 pub fn run(args: Args) -> Result<i32, ClutchError> {
     let config_path = args.config.as_deref();
     let raw_rules = config::load_rules(config_path)?;
@@ -29,7 +33,7 @@ pub fn run(args: Args) -> Result<i32, ClutchError> {
     let compiled = rules::compile_rules(&raw_rules)?;
 
     // Read clipboard
-    let mut clipboard = Clipboard::new().map_err(|e| ClutchError::Clipboard(e.to_string()))?;
+    let mut clipboard = Clipboard::new().map_err(clipboard_err)?;
 
     const MAX_CLIPBOARD_BYTES: usize = 10 * 1024 * 1024; // 10 MB
 
@@ -57,7 +61,7 @@ pub fn run(args: Args) -> Result<i32, ClutchError> {
     } else {
         clipboard
             .set_text(&result.text)
-            .map_err(|e| ClutchError::Clipboard(e.to_string()))?;
+            .map_err(clipboard_err)?;
     }
 
     notify::send_notification(&result);
