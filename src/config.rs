@@ -40,18 +40,23 @@ pub fn load_rules(config_path: Option<&Path>) -> Result<Vec<Rule>, ClutchError> 
     let config: ConfigFile = toml::from_str(&content)
         .map_err(|e| ClutchError::Config(format!("failed to parse {}: {}", path.display(), e)))?;
 
-    // Validate all user regex patterns upfront
+    // Validate all user regex patterns upfront, even disabled ones,
+    // so users get feedback immediately instead of on re-enable.
     for rule in &config.rules {
-        if rule.enabled && rule.pattern.is_empty() {
+        // Skip empty-pattern check for rules that only exist to disable a default
+        let is_disable_only = !rule.enabled && default_rules().iter().any(|d| d.name == rule.name);
+        if rule.pattern.is_empty() && !is_disable_only {
             return Err(ClutchError::Config(format!(
                 "rule '{}' is missing a pattern",
                 rule.name
             )));
         }
-        regex::Regex::new(&rule.pattern).map_err(|e| ClutchError::InvalidRegex {
-            name: rule.name.clone(),
-            source: e,
-        })?;
+        if !rule.pattern.is_empty() {
+            regex::Regex::new(&rule.pattern).map_err(|e| ClutchError::InvalidRegex {
+                name: rule.name.clone(),
+                source: e,
+            })?;
+        }
     }
 
     // Merge: user rules can disable defaults or add new ones
@@ -148,6 +153,19 @@ name = "EMPTY_RULE"
         assert!(result.is_err());
         let err = result.unwrap_err().to_string();
         assert!(err.contains("EMPTY_RULE"));
+    }
+
+    #[test]
+    fn test_disabled_rule_with_invalid_regex_is_error() {
+        let config = r#"
+[[rules]]
+name = "BAD_DISABLED"
+pattern = "[invalid("
+enabled = false
+"#;
+        let file = write_temp_config(config);
+        let result = load_rules(Some(file.path()));
+        assert!(result.is_err());
     }
 
     #[test]
