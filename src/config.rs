@@ -42,12 +42,16 @@ pub fn load_rules(config_path: Option<&Path>) -> Result<Vec<Rule>, ClutchError> 
 
     // Validate all user regex patterns upfront
     for rule in &config.rules {
-        if rule.enabled {
-            regex::Regex::new(&rule.pattern).map_err(|e| ClutchError::InvalidRegex {
-                name: rule.name.clone(),
-                source: e,
-            })?;
+        if rule.enabled && rule.pattern.is_empty() {
+            return Err(ClutchError::Config(format!(
+                "rule '{}' is missing a pattern",
+                rule.name
+            )));
         }
+        regex::Regex::new(&rule.pattern).map_err(|e| ClutchError::InvalidRegex {
+            name: rule.name.clone(),
+            source: e,
+        })?;
     }
 
     // Merge: user rules can disable defaults or add new ones
@@ -131,6 +135,19 @@ pattern = "[invalid("
     fn test_missing_explicit_config_is_error() {
         let result = load_rules(Some(Path::new("/nonexistent/path/rules.toml")));
         assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_empty_pattern_is_error() {
+        let config = r#"
+[[rules]]
+name = "EMPTY_RULE"
+"#;
+        let file = write_temp_config(config);
+        let result = load_rules(Some(file.path()));
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(err.contains("EMPTY_RULE"));
     }
 
     #[test]
