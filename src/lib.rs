@@ -10,16 +10,19 @@ use arboard::Clipboard;
 use crate::cli::Args;
 use crate::error::ClutchError;
 
+fn list_rules(rules: &[rules::Rule]) {
+    for rule in rules {
+        let status = if rule.enabled { "enabled" } else { "disabled" };
+        println!("[{}] {} — {}", status, rule.name, rule.pattern);
+    }
+}
+
 pub fn run(args: Args) -> Result<i32, ClutchError> {
     let config_path = args.config.as_deref();
     let raw_rules = config::load_rules(config_path)?;
 
-    // --list-rules: print rules and exit
     if args.list_rules {
-        for rule in &raw_rules {
-            let status = if rule.enabled { "enabled" } else { "disabled" };
-            println!("[{}] {} — {}", status, rule.name, rule.pattern);
-        }
+        list_rules(&raw_rules);
         return Ok(0);
     }
 
