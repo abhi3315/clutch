@@ -48,6 +48,14 @@ impl CompiledRule {
     }
 }
 
+pub fn validate_pattern(name: &str, pattern: &str) -> Result<(), ClutchError> {
+    Regex::new(pattern).map_err(|e| ClutchError::InvalidRegex {
+        name: name.to_string(),
+        source: e,
+    })?;
+    Ok(())
+}
+
 pub fn compile_rules(rules: &[Rule]) -> Result<Vec<CompiledRule>, ClutchError> {
     rules
         .iter()

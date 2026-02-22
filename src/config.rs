@@ -3,7 +3,7 @@ use std::path::{Path, PathBuf};
 use serde::Deserialize;
 
 use crate::error::ClutchError;
-use crate::rules::{default_rules, Rule};
+use crate::rules::{default_rules, validate_pattern, Rule};
 
 #[derive(Debug, Deserialize)]
 struct ConfigFile {
@@ -54,10 +54,7 @@ pub fn load_rules(config_path: Option<&Path>) -> Result<Vec<Rule>, ClutchError> 
             )));
         }
         if !rule.pattern.is_empty() {
-            regex::Regex::new(&rule.pattern).map_err(|e| ClutchError::InvalidRegex {
-                name: rule.name.clone(),
-                source: e,
-            })?;
+            validate_pattern(&rule.name, &rule.pattern)?;
         }
     }
 
