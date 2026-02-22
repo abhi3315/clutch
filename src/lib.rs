@@ -59,9 +59,7 @@ pub fn run(args: Args) -> Result<i32, ClutchError> {
     if args.dry_run {
         println!("\n--- dry run preview ---\n{}", result.text);
     } else {
-        clipboard
-            .set_text(&result.text)
-            .map_err(clipboard_err)?;
+        clipboard.set_text(&result.text).map_err(clipboard_err)?;
     }
 
     notify::send_notification(&result);
