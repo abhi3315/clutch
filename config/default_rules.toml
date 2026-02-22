@@ -1,0 +1,22 @@
+# Clutch — example rules configuration
+# Place your custom rules at: ~/.config/clutch/rules.toml
+#
+# Each rule needs:
+#   name    = "LABEL"          # appears in [REDACTED:LABEL]
+#   pattern = "regex pattern"  # Rust regex syntax
+#   enabled = true             # optional, defaults to true
+#
+# To disable a built-in rule, add it by name with enabled = false:
+#   [[rules]]
+#   name = "AWS_ACCESS_KEY"
+#   enabled = false
+
+# Custom rule example: Slack webhook URLs
+[[rules]]
+name = "SLACK_WEBHOOK"
+pattern = "https://hooks\\.slack\\.com/services/T[A-Z0-9]+/B[A-Z0-9]+/[a-zA-Z0-9]+"
+
+# Custom rule example: Sendgrid API key
+[[rules]]
+name = "SENDGRID_KEY"
+pattern = "SG\\.[a-zA-Z0-9_-]{22}\\.[a-zA-Z0-9_-]{43}"
