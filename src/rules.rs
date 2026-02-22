@@ -87,31 +87,31 @@ pub fn default_rules() -> Vec<Rule> {
         Rule::new("GOOGLE_API_KEY", r"(?P<m>AIza[0-9A-Za-z\-_]{35})"),
         Rule::new(
             "ENV_PASSWORD",
-            r"(?m)^(?P<m>(?:PASSWORD|PASSWD)\s*[=:]\s*\S+)",
+            r"(?m)^[\s\-]*(?P<m>[A-Z_]*(?:PASSWORD|PASSWD)\s*[=:]\s*\S+)",
         ),
         Rule::new(
             "ENV_SECRET",
-            r"(?m)^(?P<m>(?:SECRET|SECRET_KEY|APP_SECRET)\s*[=:]\s*\S+)",
+            r"(?m)^[\s\-]*(?P<m>[A-Z_]*(?:SECRET|SECRET_KEY)\s*[=:]\s*\S+)",
         ),
         Rule::new(
             "ENV_API_KEY",
-            r"(?m)^(?P<m>(?:API_KEY|APIKEY|API_SECRET)\s*[=:]\s*\S+)",
+            r"(?m)^[\s\-]*(?P<m>[A-Z_]*(?:API_KEY|APIKEY|API_SECRET)\s*[=:]\s*\S+)",
         ),
         Rule::new(
             "ENV_TOKEN",
-            r"(?m)^(?P<m>(?:TOKEN|ACCESS_TOKEN|AUTH_TOKEN)\s*[=:]\s*\S+)",
+            r"(?m)^[\s\-]*(?P<m>[A-Z_]*(?:TOKEN|ACCESS_TOKEN|AUTH_TOKEN)\s*[=:]\s*\S+)",
         ),
         Rule::new(
             "DOCKER_POSTGRES_PASSWORD",
-            r"(?m)^(?P<m>POSTGRES_PASSWORD\s*[=:]\s*\S+)",
+            r"(?m)^[\s\-]*(?P<m>POSTGRES_PASSWORD\s*[=:]\s*\S+)",
         ),
         Rule::new(
             "DOCKER_MYSQL_PASSWORD",
-            r"(?m)^(?P<m>MYSQL_ROOT_PASSWORD\s*[=:]\s*\S+)",
+            r"(?m)^[\s\-]*(?P<m>MYSQL_ROOT_PASSWORD\s*[=:]\s*\S+)",
         ),
         Rule::new(
             "DOCKER_MONGO_PASSWORD",
-            r"(?m)^(?P<m>MONGO_INITDB_ROOT_PASSWORD\s*[=:]\s*\S+)",
+            r"(?m)^[\s\-]*(?P<m>MONGO_INITDB_ROOT_PASSWORD\s*[=:]\s*\S+)",
         ),
         Rule::new(
             "PRIVATE_KEY",

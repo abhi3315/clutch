@@ -144,9 +144,9 @@ mod tests {
     #[test]
     fn test_env_password() {
         let rules = compiled_defaults();
-        let input = "PASSWORD=hunter2\nSECRET=mysecretvalue\nAPI_KEY=abcdef123456";
+        let input = "PASSWORD=hunter2\nSECRET=mysecretvalue\nAPI_KEY=abcdef123456\n      - ANTHROPIC_API_KEY=sk-ant-fakekey";
         let result = sanitize(input, &rules);
-        assert!(result.total_redactions >= 3);
+        assert!(result.total_redactions >= 4);
     }
 
     #[test]
@@ -161,7 +161,7 @@ mod tests {
     #[test]
     fn test_docker_compose_passwords() {
         let rules = compiled_defaults();
-        let input = "POSTGRES_PASSWORD=mypassword\nMYSQL_ROOT_PASSWORD=rootpw\nMONGO_INITDB_ROOT_PASSWORD=mongopw";
+        let input = "POSTGRES_PASSWORD=mypassword\n      - MYSQL_ROOT_PASSWORD=rootpw\nMONGO_INITDB_ROOT_PASSWORD=mongopw";
         let result = sanitize(input, &rules);
         assert!(result.total_redactions >= 3);
     }
