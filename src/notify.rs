@@ -26,7 +26,11 @@ pub fn send_notification(result: &SanitizeResult) {
     };
 
     // Escape quotes and backslashes to prevent AppleScript injection
-    let escaped = message.replace('\\', "\\\\").replace('"', "\\\"");
+    let escaped = message
+        .replace('\\', "\\\\")
+        .replace('"', "\\\"")
+        .replace('\n', "\\n")
+        .replace('\r', "\\r");
     let script = format!(r#"display notification "{}" with title "Clutch""#, escaped);
 
     // Best-effort — don't fail the whole program if notification fails
