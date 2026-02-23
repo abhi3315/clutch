@@ -62,7 +62,5 @@ pub fn run(args: Args) -> Result<i32, ClutchError> {
         clipboard.set_text(&result.text).map_err(clipboard_err)?;
     }
 
-    notify::send_notification(&result);
-
     Ok(0)
 }

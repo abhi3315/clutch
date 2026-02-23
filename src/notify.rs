@@ -16,31 +16,3 @@ pub fn print_result(result: &SanitizeResult) {
         );
     }
 }
-
-#[cfg(target_os = "macos")]
-pub fn send_notification(result: &SanitizeResult) {
-    let message = if result.total_redactions == 0 {
-        "Clipboard is clean".to_string()
-    } else {
-        format!("{} secrets redacted", result.total_redactions)
-    };
-
-    // Escape quotes and backslashes to prevent AppleScript injection
-    let escaped = message
-        .replace('\\', "\\\\")
-        .replace('"', "\\\"")
-        .replace('\n', "\\n")
-        .replace('\r', "\\r");
-    let script = format!(r#"display notification "{}" with title "Clutch""#, escaped);
-
-    // Best-effort — don't fail the whole program if notification fails
-    let _ = std::process::Command::new("osascript")
-        .arg("-e")
-        .arg(&script)
-        .output();
-}
-
-#[cfg(not(target_os = "macos"))]
-pub fn send_notification(_result: &SanitizeResult) {
-    // No-op on non-macOS platforms
-}
